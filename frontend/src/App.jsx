@@ -1,6 +1,12 @@
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+const Home = React.lazy(() => import('./pages/Home'));
+
 function App() {
   return (
-    <h1>Hola Mundo</h1>
+    <Routes>
+      <Route path="/" element={<Home />} />
+    </Routes>
   )
 }
 
