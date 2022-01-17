@@ -12,4 +12,14 @@ router.get("/products", async (req, res, next) => {
   }
 })
 
+router.post("/products", async (req, res, next) => {
+  try {
+    const { name, description, price, image } = req.body
+    const product = await Product.create({ name, description, price, image })
+    res.json(product)
+  } catch (e) {
+    next(e)
+  }
+})
+
 export default router
