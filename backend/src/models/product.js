@@ -1,9 +1,9 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose"
 
 const schema = new mongoose.Schema({
   name: String,
   description: String,
-  price: Number
-});
+  price: Number,
+})
 
-export default mongoose.model('Product', schema)
+export default mongoose.model("Product", schema)
