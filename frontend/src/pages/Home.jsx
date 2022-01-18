@@ -3,6 +3,8 @@ import Navbar from "react-bootstrap/Navbar"
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Product from "../components/Product"
+import Col from "react-bootstrap/Col"
+import Cart from "../components/Cart"
 
 function Home() {
   const [products, setProducts] = useState([])
@@ -26,9 +28,16 @@ function Home() {
       </Navbar>
       <Container className="mt-5">
         <Row>
-          {products.map((product) => (
-            <Product key={product._id} product={product} />
-          ))}
+          <Col sm={8}>
+            <Row>
+              {products.map((product) => (
+                <Product key={product._id} product={product} />
+              ))}
+            </Row>
+          </Col>
+          <Col sm={4}>
+            <Cart />
+          </Col>
         </Row>
       </Container>
     </>

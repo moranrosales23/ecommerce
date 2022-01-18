@@ -1,5 +1,7 @@
 import express from "express"
+import mongoose from "mongoose"
 import Product from "./models/product.js"
+import Order from "./models/order.js"
 
 const router = express.Router()
 
@@ -20,6 +22,16 @@ router.post("/products", async (req, res, next) => {
   } catch (e) {
     next(e)
   }
+})
+
+router.post("/orders", async (req, res) => {
+  const { products } = req.body
+  for (let i = 0; i < products.length; i++) {
+    const product = await Product.findOne(new mongoose.Types.ObjectId(products[i])).lean()
+    products[i] = product
+  }
+  const order = await Order.create({ products })
+  res.json(order)
 })
 
 export default router
