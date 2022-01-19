@@ -39,9 +39,27 @@ router.post("/orders", async (req, res, next) => {
     const order = await Order.create({ products })
     const items = products.map((p) => ({ title: p.name, unit_price: p.price, quantity: 1 }))
 
+    const preference = {
+      items,
+      back_urls: {
+        success: "http://localhost:3000/mercadopago/success",
+        failure: "http://localhost:3000/mercadopago/failure",
+        pending: "http://localhost:3000/mercadopago/pending",
+      },
+    }
+
     // crear la preferencia de MercadoPago
-    const { response } = await mercadopago.preferences.create({ items })
+    const { response } = await mercadopago.preferences.create(preference)
     res.json({ order, preferenceId: response.id })
+  } catch (e) {
+    next(e)
+  }
+})
+
+router.post("/mercadopago/webhook", async (req, res, next) => {
+  try {
+    console.log(req.body)
+    res.json({})
   } catch (e) {
     next(e)
   }
