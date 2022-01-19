@@ -46,7 +46,7 @@ router.post("/orders", async (req, res, next) => {
         failure: "http://localhost:3000/mercadopago/failure",
         pending: "http://localhost:3000/mercadopago/pending",
       },
-      external_reference: order._id,
+      external_reference: order._id.toString(),
     }
 
     // crear la preferencia de MercadoPago
