@@ -46,6 +46,7 @@ router.post("/orders", async (req, res, next) => {
         failure: "http://localhost:3000/mercadopago/failure",
         pending: "http://localhost:3000/mercadopago/pending",
       },
+      external_reference: order._id,
     }
 
     // crear la preferencia de MercadoPago
@@ -59,6 +60,13 @@ router.post("/orders", async (req, res, next) => {
 router.post("/mercadopago/webhook", async (req, res, next) => {
   try {
     console.log(req.body)
+    if (req.body.action === "payment.created") {
+      console.log("Payment created!")
+    } else if (req.body.action === "payment.updated") {
+      console.log("Payment Updated")
+      // actualizar el pedido
+      // enviarle un correo al usuario diciéndole qué pasó con el pedido
+    }
     res.json({})
   } catch (e) {
     next(e)
