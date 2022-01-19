@@ -2,6 +2,11 @@ import express from "express"
 import mongoose from "mongoose"
 import Product from "./models/product.js"
 import Order from "./models/order.js"
+import mercadopago from "mercadopago"
+
+mercadopago.configure({
+  access_token: process.env.MERCADOPAGO_ACCESS_TOKEN,
+})
 
 const router = express.Router()
 
@@ -24,14 +29,22 @@ router.post("/products", async (req, res, next) => {
   }
 })
 
-router.post("/orders", async (req, res) => {
+router.post("/orders", async (req, res, next) => {
   const { products } = req.body
-  for (let i = 0; i < products.length; i++) {
-    const product = await Product.findById(new mongoose.Types.ObjectId(products[i])).lean()
-    products[i] = product
+
+  try {
+    for (let i = 0; i < products.length; i++) {
+      products[i] = await Product.findById(new mongoose.Types.ObjectId(products[i])).lean()
+    }
+    const order = await Order.create({ products })
+    const items = products.map((p) => ({ title: p.name, unit_price: p.price, quantity: 1 }))
+
+    // crear la preferencia de MercadoPago
+    const { response } = await mercadopago.preferences.create({ items })
+    res.json({ order, preferenceId: response.id })
+  } catch (e) {
+    next(e)
   }
-  const order = await Order.create({ products })
-  res.json(order)
 })
 
 export default router
