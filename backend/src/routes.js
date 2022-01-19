@@ -27,7 +27,7 @@ router.post("/products", async (req, res, next) => {
 router.post("/orders", async (req, res) => {
   const { products } = req.body
   for (let i = 0; i < products.length; i++) {
-    const product = await Product.findOne(new mongoose.Types.ObjectId(products[i])).lean()
+    const product = await Product.findById(new mongoose.Types.ObjectId(products[i])).lean()
     products[i] = product
   }
   const order = await Order.create({ products })
