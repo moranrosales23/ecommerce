@@ -23,9 +23,8 @@ function Cart() {
       preference: {
         id: data.preferenceId,
       },
+      autoOpen: true,
     })
-
-    checkout.open()
   }
 
   return (
