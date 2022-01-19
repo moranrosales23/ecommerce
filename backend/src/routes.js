@@ -3,6 +3,7 @@ import mongoose from "mongoose"
 import Product from "./models/product.js"
 import Order from "./models/order.js"
 import mercadopago from "mercadopago"
+import Charge from "./models/charge.js"
 
 mercadopago.configure({
   access_token: process.env.MERCADOPAGO_ACCESS_TOKEN,
@@ -59,18 +60,28 @@ router.post("/orders", async (req, res, next) => {
 
 router.post("/mercadopago/webhook", async (req, res, next) => {
   try {
-    console.log(req.body)
-    if (req.body.action === "payment.created") {
-      console.log("Payment created!")
-    } else if (req.body.action === "payment.updated") {
-      console.log("Payment Updated")
-      // actualizar el pedido
-      // enviarle un correo al usuario diciéndole qué pasó con el pedido
+    const { action } = req.body
+    if (action === "payment.created" || action === "payment.updated") {
+      const paymentId = req.body.data.id
+      const paymentInfo = await mercadopago.payment.get(paymentId)
+      await updateOrder(paymentInfo)
+      await Charge.create({ payload: paymentInfo })
     }
     res.json({})
   } catch (e) {
     next(e)
   }
 })
+
+async function updateOrder(paymentInfo) {
+  const status = paymentInfo.body.status
+  const orderId = paymentInfo.body.external_reference
+  const order = await Order.findById(orderId)
+
+  if (status === "approved") {
+    order.status = "payed"
+    await order.save()
+  }
+}
 
 export default router
