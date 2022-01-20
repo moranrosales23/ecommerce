@@ -63,9 +63,9 @@ router.post("/mercadopago/webhook", async (req, res, next) => {
     const { action } = req.body
     if (action === "payment.created" || action === "payment.updated") {
       const paymentId = req.body.data.id
-      const paymentInfo = await mercadopago.payment.get(paymentId)
-      await updateOrder(paymentInfo)
-      await Charge.create({ payload: paymentInfo })
+      const { response } = await mercadopago.payment.get(paymentId)
+      await updateOrder(response)
+      await Charge.create({ payload: response })
     }
     res.json({})
   } catch (e) {
@@ -74,8 +74,8 @@ router.post("/mercadopago/webhook", async (req, res, next) => {
 })
 
 async function updateOrder(paymentInfo) {
-  const status = paymentInfo.body.status
-  const orderId = paymentInfo.body.external_reference
+  const status = paymentInfo.status
+  const orderId = paymentInfo.external_reference
   const order = await Order.findById(orderId)
 
   if (status === "approved") {
