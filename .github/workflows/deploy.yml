@@ -1,0 +1,21 @@
+name: Deploy
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run ESLint on frontend
+        run: |
+          cd frontend
+          npm ci
+          npx eslint . --ext .js,.jsx
+      - name: Run ESLint on backend
+        run: |
+          cd backend
+          npm ci
+          npx eslint . --ext .js,.jsx
