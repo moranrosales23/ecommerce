@@ -9,7 +9,7 @@ defaults:
     working-directory: frontend
 
 jobs:
-  linter:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,6 +22,6 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          project: ./frontend
+          working-directory: ./frontend
           build: npm run build
           start: npm start

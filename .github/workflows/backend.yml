@@ -9,7 +9,7 @@ defaults:
     working-directory: backend
 
 jobs:
-  linter:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
