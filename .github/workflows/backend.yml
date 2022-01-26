@@ -1,0 +1,29 @@
+name: Deploy Backend
+
+on:
+  push:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run Linter
+        run: npx eslint . --ext .js,.jsx
+      # - name: Run Tests
+      #   run: npm run test
+      - name: Deploy to Heroku
+        if: {{ github.ref == 'refs/heads/main' }}
+        uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "fast-plateau-92852"
+          heroku_email: "german.escobarc@gmail.com"
+          appdir: "backend"
