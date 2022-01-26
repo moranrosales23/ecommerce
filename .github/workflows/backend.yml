@@ -8,6 +8,9 @@ defaults:
   run:
     working-directory: backend
 
+env:
+  MONGO_DB_URI: mongodb+srv://ecommerce:lPwlALySvHXheest@make-it-real.cfg3a.mongodb.net/ecommerce-test?retryWrites=true&w=majority
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
