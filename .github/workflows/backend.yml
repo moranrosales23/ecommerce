@@ -17,8 +17,8 @@ jobs:
         run: npm ci
       - name: Run Linter
         run: npx eslint . --ext .js,.jsx
-      # - name: Run Tests
-      #   run: npm run test
+      - name: Run Tests
+        run: npm test
       - name: Deploy to Heroku
         if: github.ref == 'refs/heads/main'
         uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
