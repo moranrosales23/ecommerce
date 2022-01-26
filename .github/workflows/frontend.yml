@@ -22,9 +22,9 @@ jobs:
         run: npm ci
       - name: Run Linter
         run: npx eslint . --ext .js,.jsx
-      # - name: Run Tests
-      #   run: npm run test
-      - name: Cypress run
+      - name: Run Tests
+        run: npm test
+      - name: Run Cypress Tests
         uses: cypress-io/github-action@v2
         with:
           working-directory: ./frontend
