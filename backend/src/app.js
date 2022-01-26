@@ -6,7 +6,6 @@ import routes from "./routes.js"
 
 mongoose.connect(process.env.MONGO_DB_URI || "mongodb://127.0.0.1:27017/ecommerce")
 
-const PORT = process.env.PORT
 const app = express()
 
 app.use(
