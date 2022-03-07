@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon index",
-    "start": "NODE_ENV=production node index",
-    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --forceExit"
+    "dev": "nodemon index",
+    "start": "set NODE_ENV=production node index",
+    "test": "set NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --forceExit"
   },
   "keywords": [],
   "author": "",
@@ -15,16 +15,17 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^12.0.4",
-    "express": "^4.17.2",
-    "mongoose": "^6.1.6"
+    "express": "^4.17.3",
+    "mercadopago": "^1.5.9",
+    "mongoose": "^6.2.4"
   },
   "devDependencies": {
-    "eslint": "^8.7.0",
+    "eslint": "^8.10.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
-    "jest": "^27.4.7",
+    "jest": "^27.5.1",
     "nodemon": "^2.0.15",
     "prettier": "2.5.1",
     "superagent": "^7.1.1",

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import "dotenv/config"
 import mongoose from "mongoose"
 import express from "express"
