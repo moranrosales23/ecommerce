@@ -1,11 +1,13 @@
 import { Button } from "react-bootstrap"
 import Card from "react-bootstrap/Card"
 import ListGroup from "react-bootstrap/ListGroup"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useState } from "react"
 import Payment from "./Payment"
 
 function Cart() {
+  const dispatch = useDispatch()
+
   const products = useSelector((state) => state.cart)
 
   const [show, setShow] = useState(false)
@@ -15,16 +17,10 @@ function Cart() {
 
   async function pay() {
     setShow(true)
-    /*const response = await fetch(`${import.meta.env.VITE_BASE_URL}/orders`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ products: products.map((p) => p._id) }),
-    })
+  }
 
-    const data = response.json()
-    alert("Orden creada!")*/
+  function deleteProduct(id) {
+    dispatch({ type: "REMOVE_PRODUCT", payload: id })
   }
 
   return (
@@ -35,6 +31,9 @@ function Cart() {
           <ListGroup.Item key={product._id} className="d-flex justify-content-between">
             {product.name}
             <span>${product.price}</span>
+            <Button variant="danger" className="py-0 px-2" onClick={() => deleteProduct(product._id)}>
+              <span>x</span>
+            </Button>
           </ListGroup.Item>
         ))}
         <ListGroup.Item>

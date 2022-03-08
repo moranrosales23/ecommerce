@@ -6,11 +6,20 @@ import Form from "react-bootstrap/Form"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import "react-credit-cards/es/styles-compiled.css"
+import Swal from "sweetalert2"
+import withReactContent from "sweetalert2-react-content"
+import { useDispatch } from "react-redux"
+import "sweetalert2/dist/sweetalert2.css"
 
 function Payment({ show, handleClose, products, total }) {
   const mp = new MercadoPago(import.meta.env.VITE_TK_PUBLIC, {
     locale: "es-PE",
   })
+
+  const dispatch = useDispatch()
+
+  const MySwal = withReactContent(Swal)
+
   const [card, setCard] = useState({
     cvc: "",
     expiry: "",
@@ -75,12 +84,10 @@ function Payment({ show, handleClose, products, total }) {
         callbacks: {
           onFormMounted: (error) => {
             if (error) return console.warn("Form Mounted handling error: ", error)
-            console.log("Form mounted")
           },
           onSubmit: (event) => {
-            console.log("hsdhd")
             event.preventDefault()
-
+            Swal.showLoading()
             const {
               paymentMethodId: payment_method_id,
               issuerId: issuer_id,
@@ -99,6 +106,7 @@ function Payment({ show, handleClose, products, total }) {
               quantity: 1,
               unit_price: product.price,
             }))
+
             fetch(`${import.meta.env.VITE_BASE_URL}/orders`, {
               method: "POST",
               headers: {
@@ -121,6 +129,15 @@ function Payment({ show, handleClose, products, total }) {
                 additional_info: { items },
               }),
             })
+              .then((r) => r.json())
+              .then(
+                function (response) {
+                  dispatch({ type: "CLEAR_CART" })
+                  MySwal.fire("Message", response.status || response.error, "success")
+                  handleClose()
+                },
+                (err) => MySwal.fire("Message", err.error, "error")
+              )
           },
           onFetching: (resource) => {
             console.log("Fetching resource: ", resource)
@@ -140,7 +157,15 @@ function Payment({ show, handleClose, products, total }) {
       <Modal.Body>
         <Cards cvc={card.cvc} expiry={card.expiry} focused={card.focus} name={card.name} number={card.number} />
 
-        <form className="mt-4" id="form-checkout">
+        <Form className="mt-4" id="form-checkout">
+          <Row className="mb-3">
+            <Form.Group as={Col}>
+              <Form.Select name="identificationType" id="form-checkout__identificationType"></Form.Select>
+            </Form.Group>
+            <Form.Group as={Col}>
+              <Form.Control type="text" name="identificationNumber" id="form-checkout__identificationNumber" />
+            </Form.Group>
+          </Row>
           <Row className="mb-3">
             <Form.Group as={Col}>
               <Form.Label>Card Number</Form.Label>
@@ -197,14 +222,13 @@ function Payment({ show, handleClose, products, total }) {
             </Form.Group>
           </Row>
 
-          <select name="issuer" id="form-checkout__issuer" style={{ display: "none" }}></select>
-          <select name="identificationType" id="form-checkout__identificationType"></select>
-          <input type="text" name="identificationNumber" id="form-checkout__identificationNumber" />
-          <select name="installments" id="form-checkout__installments"></select>
+          <Form.Select name="issuer" id="form-checkout__issuer" style={{ display: "none" }}></Form.Select>
+
+          <Form.Select name="installments" id="form-checkout__installments"></Form.Select>
           <Button variant="primary" type="submit" id="form-checkout__submit">
             Pay
           </Button>
-        </form>
+        </Form>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
